@@ -1,0 +1,12 @@
+# Modifications needed for alacritty.yml
+
+# 1. Comment out or remove any existing colors: section like this:
+# Colors are now handled by wallust import below  
+# colors:
+
+# 2. Add this import at the end of your alacritty.yml:
+# Import wallust generated colors
+import:
+  - ~/.cache/wallust/alacritty-colors.yml
+
+# This allows alacritty to use wallust-generated colors that change with your wallpaper

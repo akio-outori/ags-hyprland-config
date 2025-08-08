@@ -1,0 +1,37 @@
+/* Wallust Dynamic Colors for Waybar */
+@define-color bar-bg rgba({{background | rgb}}, 0.95);
+@define-color bar-border rgba({{color2 | rgb}}, 0.3);
+
+@define-color main-bg {{color0}};
+@define-color main-fg {{foreground}};
+
+@define-color wb-act-bg {{color2}};
+@define-color wb-act-fg {{background}};
+
+@define-color wb-hvr-bg {{color5}};
+@define-color wb-hvr-fg {{background}};
+
+@define-color wb-color {{foreground}};
+@define-color wb-act-color {{background}};
+@define-color wb-hvr-color {{background}};
+
+@define-color bg-main {{background}};
+@define-color bg-main-br {{color8}};
+@define-color bg-alt {{color0}};
+@define-color bg-alt-br {{color8}};
+@define-color fg-main {{foreground}};
+@define-color fg-alt {{color7}};
+
+@define-color red {{color1}};
+@define-color green {{color2}};
+@define-color yellow {{color3}};
+@define-color blue {{color4}};
+@define-color magenta {{color5}};
+@define-color cyan {{color6}};
+
+@define-color red-br {{color9}};
+@define-color green-br {{color10}};
+@define-color yellow-br {{color11}};
+@define-color blue-br {{color12}};
+@define-color magenta-br {{color13}};
+@define-color cyan-br {{color14}};
