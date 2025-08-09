@@ -7,19 +7,19 @@ const time = Variable("--:--").poll(1000, "date '+%H:%M'")
 const date = Variable("").poll(60000, "date '+%a %b %d'")
 
 // Hardware monitoring variables
-const gpuInfo = Variable({ temp: "0", usage: "0", mem: "0" }).poll(2000, ["bash", "-c", `
-    nvidia-smi --query-gpu=temperature.gpu,utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits | 
-    awk -F', ' '{printf "{\\"temp\\": \\"%s\\", \\"usage\\": \\"%s\\", \\"mem\\": \\"%d/%d\\"}", $1, $2, $3, $4}'
+const gpuInfo = Variable({ temp: "0", wattage: "0", mem: "0" }).poll(1000, ["bash", "-c", `
+    nvidia-smi --query-gpu=temperature.gpu,power.draw,memory.used,memory.total --format=csv,noheader,nounits | 
+    awk -F', ' '{printf "{\\"temp\\": \\"%s\\", \\"wattage\\": \\"%d\\", \\"mem\\": \\"%d/%d\\"}", $1, int($2), $3, $4}'
 `], (out) => {
     try {
         const parsed = JSON.parse(out);
         return {
             temp: parsed.temp || "0",
-            usage: parsed.usage || "0",
+            wattage: parsed.wattage || "0",
             mem: parsed.mem || "0/0"
         };
     } catch {
-        return { temp: "0", usage: "0", mem: "0/0" };
+        return { temp: "0", wattage: "0", mem: "0/0" };
     }
 })
 
@@ -27,9 +27,9 @@ const ramInfo = Variable({ used: "0", total: "0", percent: "0" }).poll(2000, ["b
     free -m | awk '/^Mem:/ {used=$2-$7; total=$2; percent=int(used/total*100); print "{\\"used\\": \\"" used "\\", \\"total\\": \\"" total "\\", \\"percent\\": \\"" percent "\\"}"}'
 `], (out) => JSON.parse(out))
 
-const cpuTemp = Variable("0").poll(2000, ["bash", "-c", 
-    "sensors | grep -A1 'Virtual device' | grep 'temp1:' | cut -d':' -f2 | cut -d'.' -f1 | tr -d ' +'"
-])
+const cpuTemp = Variable({ ccd1: "0", ccd2: "0" }).poll(1000, ["bash", "-c", 
+    `sensors | grep 'Tccd' | awk '{gsub(/[°C+]/, "", $2); temps[NR]=int($2)} END {print "{\\"ccd1\\": \\"" temps[1] "\\", \\"ccd2\\": \\"" temps[2] "\\"}"}'`
+], (out) => JSON.parse(out))
 
 const cpuUsage = Variable("0").poll(2000, ["bash", "-c", 
     "grep 'cpu ' /proc/stat | awk '{usage=int(100-($5/($2+$3+$4+$5+$6+$7+$8))*100)} END {print usage}'"
@@ -107,11 +107,11 @@ function HardwareMonitor() {
         {/* CPU */}
         <button 
             className="hw-widget cpu-widget"
-            onClicked="alacritty --class=alacritty-monitor -e btop"
+            onClicked="alacritty --class=alacritty-monitor -e htop"
         >
             <box>
                 <label label={bind(cpuUsage).as(v => `󰍛 CPU ${v}% `)} />
-                <label label={bind(cpuTemp).as(v => `${v}°C`)} />
+                <label label={bind(cpuTemp).as(v => `${v.ccd1}°/${v.ccd2}°C`)} />
             </box>
         </button>
 
@@ -120,7 +120,7 @@ function HardwareMonitor() {
             className="hw-widget gpu-widget"
             onClicked="nvidia-settings"
         >
-            <label label={bind(gpuInfo).as(v => `󰢮 GPU ${v.usage}% ${v.temp}°C`)} />
+            <label label={bind(gpuInfo).as(v => `󰢮 GPU ${v.wattage}W ${v.temp}°C`)} />
         </button>
 
         {/* RAM */}
@@ -195,6 +195,15 @@ function LauncherButton() {
     </button>
 }
 
+function ShortcutsButton() {
+    return <button 
+        className="shortcuts-btn"
+        onClicked={`alacritty --class=alacritty-help -e bash -c 'echo "Hyprland Keyboard Shortcuts"; echo; grep "^bind = " ~/.config/hypr/hyprland.conf | sed "s/bind = //" | column -t -s, | less'`}
+    >
+        <label label="󰌌" />
+    </button>
+}
+
 export default function Bar(gdkmonitor: Gdk.Monitor) {
     const { TOP } = Astal.WindowAnchor
 
@@ -208,6 +217,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
         <centerbox className="bar-container">
             <box className="left-modules">
                 <LauncherButton />
+                <ShortcutsButton />
             </box>
             
             <box className="center-modules">
