@@ -1,0 +1,223 @@
+@use "/home/jeff/.cache/wallust/ags-colors.scss" as *;
+
+* {
+    all: unset;
+}
+
+window {
+    background: transparent;
+}
+
+window.BarEnhanced {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 14px;
+    color: #{$text};
+}
+
+.bar-container {
+    background-color: #{$bar-bg};
+    opacity: 0.85;
+    border-radius: 16px;
+    margin: 12px 40px;
+    padding: 12px 28px;
+    min-height: 48px;
+    border: 1px solid #{$bar-border};
+}
+
+.left-modules {
+    padding-right: 20px;
+}
+
+.center-modules {
+    padding: 0px;
+}
+
+.right-modules {
+    padding-left: 20px;
+}
+
+/* Launcher button - icon only, no box */
+.launcher-btn {
+    color: #{$accent};
+    background: transparent;
+    border-radius: 12px;
+    padding: 6px 10px;
+    font-size: 22px;
+    font-weight: 700;
+    transition: all 200ms;
+}
+
+.launcher-btn:hover {
+    color: #{$accent2};
+    background-color: #{$widget-bg};
+}
+
+/* Hardware monitor widgets - no boxes, just icons and text */
+.hardware-monitor {
+    padding: 0px 8px;
+}
+
+.hw-widget {
+    background: transparent;
+    padding: 4px 6px;
+    margin: 0px 4px;
+    min-width: 110px;
+    color: #{$text};
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 200ms;
+}
+
+.hw-widget:hover {
+    background-color: #{$widget-bg};
+    color: #{$accent};
+}
+
+/* CPU widget with temperature colors */
+.cpu-widget {
+    color: #{$text};
+}
+
+.cpu-widget:hover {
+    color: #{$accent};
+}
+
+/* GPU widget */
+.gpu-widget {
+    color: #{$text};
+}
+
+.gpu-widget:hover {
+    color: #{$accent};
+}
+
+/* RAM widget */
+.ram-widget {
+    color: #{$text};
+}
+
+.ram-widget:hover {
+    color: #{$accent2};
+}
+
+/* Network monitor - minimal style */
+.network-monitor {
+    background: transparent;
+    padding: 4px 8px;
+    margin: 0px 6px;
+    min-width: 160px;
+    color: #{$text};
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 200ms;
+}
+
+.network-monitor:hover {
+    background-color: #{$widget-bg};
+    color: #{$accent};
+}
+
+/* Volume control - icon changes with level */
+.volume-control {
+    background: transparent;
+    padding: 4px 6px;
+    margin: 0px 6px;
+    min-width: 70px;
+    color: #{$text};
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 200ms;
+}
+
+.volume-control:hover {
+    background-color: #{$widget-bg};
+    color: #{$accent};
+}
+
+/* Updates widget - only shows when updates available */
+.updates-widget {
+    background: transparent;
+    padding: 4px 6px;
+    margin: 0px 6px;
+    min-width: 50px;
+    color: #{$text-dim};
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 200ms;
+}
+
+.updates-widget.has-updates {
+    color: #{$accent};
+    background-color: #{$widget-bg};
+    animation: pulse 2s infinite;
+}
+
+.updates-widget:hover {
+    background-color: #{$widget-bg};
+    color: #{$accent2};
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Clock widget - minimal and elegant */
+.clock-widget {
+    background: transparent;
+    padding: 0px;
+    margin: 0px 8px;
+    border-radius: 12px;
+}
+
+.time-display {
+    padding: 4px 10px;
+    min-width: 160px;
+    color: #{$text};
+    font-size: 14px;
+    font-weight: 600;
+    background: #{$widget-bg};
+    border-radius: 10px;
+    transition: all 200ms;
+}
+
+.time-display:hover {
+    background-color: #{$widget-bg};
+    color: #{$accent};
+}
+
+/* Power menu - subtle but accessible */
+.power-menu {
+    color: #{$urgent};
+    background: transparent;
+    padding: 6px 10px;
+    margin-left: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 12px;
+    transition: all 200ms;
+}
+
+.power-menu:hover {
+    background-color: #{$urgent};
+    color: #{$urgent};
+}
+
+/* Icon adjustments for better theme integration */
+.hw-widget label,
+.network-monitor label,
+.volume-control label,
+.updates-widget label {
+    padding: 0px 2px;
+}
+
+/* Separator style for visual grouping */
+.widget-separator {
+    color: #{$text-dim};
+    padding: 0px 4px;
+    font-size: 16px;
+}

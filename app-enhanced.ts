@@ -1,5 +1,5 @@
 import { App } from "astal/gtk3"
-import styleEnhanced from "./style-clean-bar.scss"
+import styleEnhanced from "./style-minimal-bar.scss"
 import BarEnhanced from "./widget/BarEnhanced"
 
 App.start({

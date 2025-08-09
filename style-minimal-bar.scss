@@ -1,0 +1,170 @@
+@use "/home/jeff/.cache/wallust/ags-colors.scss" as *;
+
+* {
+    all: unset;
+}
+
+window {
+    background: transparent;
+}
+
+window.BarEnhanced {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 14px;
+    color: #{$text};
+}
+
+.bar-container {
+    background-color: #{$bar-bg};
+    opacity: 0.9;
+    border-radius: 14px;
+    margin: 10px 30px;
+    padding: 8px 20px;
+    min-height: 44px;
+}
+
+.left-modules {
+    padding-right: 16px;
+}
+
+.center-modules {
+    padding: 0px;
+}
+
+.right-modules {
+    padding-left: 16px;
+}
+
+/* Launcher button */
+.launcher-btn {
+    color: #{$accent};
+    background: transparent;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.launcher-btn:hover {
+    color: #{$accent2};
+    background-color: #{$widget-bg};
+    opacity: 0.5;
+}
+
+/* Hardware monitor widgets */
+.hardware-monitor {
+    padding: 0px 6px;
+}
+
+.hw-widget {
+    background: transparent;
+    padding: 3px 6px;
+    margin: 0px 3px;
+    min-width: 100px;
+    color: #{$text};
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.hw-widget:hover {
+    background-color: #{$widget-bg};
+    opacity: 0.7;
+    color: #{$accent};
+}
+
+/* Network monitor */
+.network-monitor {
+    background: transparent;
+    padding: 3px 8px;
+    margin: 0px 4px;
+    min-width: 150px;
+    color: #{$text};
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.network-monitor:hover {
+    background-color: #{$widget-bg};
+    opacity: 0.7;
+    color: #{$accent};
+}
+
+/* Volume control */
+.volume-control {
+    background: transparent;
+    padding: 3px 6px;
+    margin: 0px 4px;
+    min-width: 65px;
+    color: #{$text};
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.volume-control:hover {
+    background-color: #{$widget-bg};
+    opacity: 0.7;
+    color: #{$accent};
+}
+
+/* Updates widget */
+.updates-widget {
+    background: transparent;
+    padding: 3px 6px;
+    margin: 0px 4px;
+    min-width: 45px;
+    color: #{$text-dim};
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.updates-widget.has-updates {
+    color: #{$accent};
+    background: transparent;
+}
+
+.updates-widget:hover {
+    color: #{$accent2};
+}
+
+/* Clock widget */
+.clock-widget {
+    background: transparent;
+    padding: 0px;
+    margin: 0px 6px;
+    border-radius: 8px;
+}
+
+.time-display {
+    padding: 3px 10px;
+    min-width: 150px;
+    color: #{$text};
+    font-size: 14px;
+    font-weight: 600;
+    background: transparent;
+    border-radius: 8px;
+}
+
+.time-display:hover {
+    color: #{$accent};
+}
+
+/* Power menu */
+.power-menu {
+    color: #{$urgent};
+    background: transparent;
+    padding: 4px 8px;
+    margin-left: 6px;
+    font-size: 17px;
+    font-weight: 700;
+    border-radius: 8px;
+}
+
+.power-menu:hover {
+    background-color: #{$urgent};
+    opacity: 0.8;
+    color: #{$bar-bg};
+}
