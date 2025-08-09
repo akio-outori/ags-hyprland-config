@@ -24,15 +24,15 @@ const gpuInfo = Variable({ temp: "0", usage: "0", mem: "0" }).poll(2000, ["bash"
 })
 
 const ramInfo = Variable({ used: "0", total: "0", percent: "0" }).poll(2000, ["bash", "-c", `
-    free -m | awk 'NR==2 {printf "{\\"used\\": \\"%d\\", \\"total\\": \\"%d\\", \\"percent\\": \\"%.0f\\"}", $3, $2, $3/$2*100}'
+    free -m | awk '/^Mem:/ {used=$2-$7; total=$2; percent=int(used/total*100); print "{\\"used\\": \\"" used "\\", \\"total\\": \\"" total "\\", \\"percent\\": \\"" percent "\\"}"}'
 `], (out) => JSON.parse(out))
 
 const cpuTemp = Variable("0").poll(2000, ["bash", "-c", 
-    "sensors -j 2>/dev/null | jq -r '.[\"k10temp-pci-00c3\"].Tctl.temp1_input // .[\"coretemp-isa-0000\"][\"Package id 0\"].temp1_input // 0' | cut -d. -f1"
+    "sensors | grep -A1 'Virtual device' | grep 'temp1:' | cut -d':' -f2 | cut -d'.' -f1 | tr -d ' +'"
 ])
 
 const cpuUsage = Variable("0").poll(2000, ["bash", "-c", 
-    "top -bn1 | grep 'Cpu(s)' | awk '{print int(100 - $8)}'"
+    "grep 'cpu ' /proc/stat | awk '{usage=int(100-($5/($2+$3+$4+$5+$6+$7+$8))*100)} END {print usage}'"
 ])
 
 // Network stats with better formatting
@@ -109,7 +109,10 @@ function HardwareMonitor() {
             className="hw-widget cpu-widget"
             onClicked="alacritty --class=alacritty-monitor -e btop"
         >
-            <label label={bind(cpuUsage).as(v => `󰍛 CPU ${v}% ${bind(cpuTemp).get()}°C`)} />
+            <box>
+                <label label={bind(cpuUsage).as(v => `󰍛 CPU ${v}% `)} />
+                <label label={bind(cpuTemp).as(v => `${v}°C`)} />
+            </box>
         </button>
 
         {/* GPU */}
