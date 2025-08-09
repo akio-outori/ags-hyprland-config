@@ -53,14 +53,14 @@ window.BarEnhanced {
 
 /* Hardware monitor widgets */
 .hardware-monitor {
-    padding: 0px 6px;
+    padding: 0px 2px;
 }
 
 .hw-widget {
     background: transparent;
-    padding: 3px 6px;
-    margin: 0px 3px;
-    min-width: 100px;
+    padding: 3px 4px;
+    margin: 0px 2px;
+    min-width: 95px;
     color: #{$text};
     font-size: 13px;
     font-weight: 600;
@@ -76,9 +76,9 @@ window.BarEnhanced {
 /* Network monitor */
 .network-monitor {
     background: transparent;
-    padding: 3px 8px;
-    margin: 0px 4px;
-    min-width: 150px;
+    padding: 3px 6px;
+    margin: 0px 2px;
+    min-width: 145px;
     color: #{$text};
     font-size: 13px;
     font-weight: 600;
@@ -94,8 +94,8 @@ window.BarEnhanced {
 /* Volume control */
 .volume-control {
     background: transparent;
-    padding: 3px 6px;
-    margin: 0px 4px;
+    padding: 3px 4px;
+    margin: 0px 2px;
     min-width: 65px;
     color: #{$text};
     font-size: 13px;
@@ -112,18 +112,21 @@ window.BarEnhanced {
 /* Updates widget */
 .updates-widget {
     background: transparent;
-    padding: 3px 6px;
-    margin: 0px 4px;
-    min-width: 45px;
-    color: #{$text-dim};
-    font-size: 14px;
-    font-weight: 600;
+    padding: 0px;
+    margin: 0px;
+    min-width: 0px;
+    color: transparent;
+    font-size: 0px;
     border-radius: 8px;
 }
 
 .updates-widget.has-updates {
     color: #{$accent};
     background: transparent;
+    padding: 3px 6px;
+    margin: 0px 4px;
+    min-width: 45px;
+    font-size: 14px;
 }
 
 .updates-widget:hover {
@@ -134,7 +137,7 @@ window.BarEnhanced {
 .clock-widget {
     background: transparent;
     padding: 0px;
-    margin: 0px 6px;
+    margin: 0px 3px;
     border-radius: 8px;
 }
 
@@ -157,7 +160,7 @@ window.BarEnhanced {
     color: #{$urgent};
     background: transparent;
     padding: 4px 8px;
-    margin-left: 6px;
+    margin-left: 4px;
     font-size: 17px;
     font-weight: 700;
     border-radius: 8px;

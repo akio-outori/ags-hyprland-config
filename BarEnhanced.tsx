@@ -211,9 +211,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
             </box>
             
             <box className="right-modules">
-                {bind(updatesCount).as(count => 
-                    parseInt(count) > 0 ? <UpdateNotifier /> : null
-                )}
+                <UpdateNotifier />
                 <HardwareMonitor />
                 <NetworkMonitor />
                 <VolumeControl />
