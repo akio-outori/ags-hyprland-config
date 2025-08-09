@@ -1,0 +1,35 @@
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.js
+*.map
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+
+# AGS runtime files
+/tmp/ags-profile-mode
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Logs
+*.log
+npm-debug.log*
+
+# Personal configurations
+personal/
+private/
+
+# Cache files
+.cache/
+*.cache

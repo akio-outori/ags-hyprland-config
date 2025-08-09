@@ -1,22 +1,26 @@
-# AGS + Hyprland Dynamic Theming Setup
+# AGS Hyprland Config
 
-A complete setup for AGS (Aylur's GTK Shell) status bar with dynamic wallust theming for Hyprland window manager.
+A modern, dynamic status bar for Hyprland using AGS (Aylur's Gtk Shell) with automatic theming based on wallpaper colors.
 
 ## Features
 
-- **AGS Status Bar** with rounded corners, centered design, and dynamic theming
-- **Wallust Integration** - Colors automatically adapt to wallpaper with live updates
-- **Dynamic Wallpaper Rotation** with automatic AGS restart for color updates
+- **Dynamic Theming**: Automatically adapts colors based on your wallpaper using Wallust
+- **Mode Switching**: Toggle between Programming and Gaming modes with different color schemes
+  - `Super + Ctrl + P` - Programming Mode
+  - `Super + Ctrl + G` - Gaming Mode
+- **Interactive Shortcuts Overlay**: Built-in keyboard shortcuts reference (click the keyboard icon)
+- **Hardware Monitoring**: Real-time CPU (dual CCD temps), GPU, RAM, and network statistics
 - **Clickable Widgets**: 
-  - CPU usage opens htop in themed terminal
-  - Network stats opens bmon in themed terminal  
-  - Date/time opens gsimplecal popup calendar
+  - CPU usage opens htop
+  - GPU stats opens nvidia-settings
+  - Network monitor opens bmon
   - Volume control opens pavucontrol
-  - Apps button launches wofi (same as Super key)
+  - Clock opens calendar
+  - App launcher opens wofi
   - Power button opens wlogout menu
-- **Proper Terminal Integration** - Terminals tile naturally with wallust colors
-- **Stretch Wallpaper Mode** - Full screen coverage without black borders
-- **Minimal Shadow Artifacts** - Uses Hyprland layer rules (ignorealpha) for clean transparency
+- **Smart Updates Widget**: Only shows when system updates are available
+- **Clean Minimal Design**: Borderless, modern aesthetic with readable typography
+- **Wallpaper Integration**: Seamless integration with swww for wallpaper management
 
 ## Screenshots
 
@@ -26,7 +30,7 @@ The bar adapts its colors to match your current wallpaper automatically.
 
 1. Run the setup script:
    ```bash
-   curl -fsSL https://raw.githubusercontent.com/akio-outori/ags-hyprland-config/main/install.sh | bash
+   curl -fsSL https://raw.githubusercontent.com/jeffhallyburton/ags-hyprland-config/main/install.sh | bash
    ```
 
 2. Reboot or restart Hyprland
@@ -46,7 +50,7 @@ Required packages:
 
 1. **Clone this repository:**
    ```bash
-   git clone https://github.com/akio-outori/ags-hyprland-config.git
+   git clone https://github.com/jeffhallyburton/ags-hyprland-config.git
    cd ags-hyprland-config
    ```
 
