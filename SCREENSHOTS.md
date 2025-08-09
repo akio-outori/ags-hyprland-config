@@ -1,53 +1,21 @@
 # Screenshot Gallery
 
-These screenshots demonstrate the AGS Hyprland Config bar with automatic wallpaper-based theming.
+A collection of examples showing how the bar adapts to different wallpapers.
 
-## Dynamic Theming Examples
+![Example 1](screenshots/example-1.png)
 
-### Dark Theme
-![Dark Theme](screenshots/hero-dark.png)
+![Example 2](screenshots/example-2.png)
 
-The bar automatically adapts to dark wallpapers with appropriate contrast and color extraction.
+![Example 3](screenshots/example-3.png)
 
-### Light Theme  
-![Light Theme](screenshots/hero-light.png)
+![Example 4](screenshots/example-4.png)
 
-Light wallpapers trigger adjusted color schemes maintaining readability.
+![Example 5](screenshots/example-5.png)
 
-### Gaming Mode
-![Gaming Mode](screenshots/gaming-mode.png)
+![Example 6](screenshots/example-6.png)
 
-Gaming mode (Super+Ctrl+G) inverts the color scheme using the wallpaper's accent color as the background.
+![Example 7](screenshots/example-7.png)
 
-### Keyboard Shortcuts Overlay
-![Shortcuts Overlay](screenshots/shortcuts-overlay.png)
+## About
 
-Interactive shortcuts reference accessible via the keyboard icon in the bar.
-
-### Additional Theme Examples
-
-![Forest Theme](screenshots/theme-forest.png)
-
-Natural color extraction from forest wallpapers.
-
-![Ocean Theme](screenshots/theme-ocean.png)
-
-Cool blue tones extracted from ocean-themed wallpapers.
-
-![Current Setup](screenshots/current-setup.png)
-
-Example of the bar in a typical desktop environment.
-
-## Technical Details
-
-- **Resolution**: 3840x2160 (4K)
-- **Window Manager**: Hyprland
-- **Font**: JetBrainsMono Nerd Font (Bold, 14px)
-- **Bar Opacity**: 90%
-- **Color Generation**: Wallust with kmeans backend
-
-## Configuration
-
-The bar appearance is entirely determined by the current wallpaper. No manual theme configuration is required. Colors are extracted automatically and applied system-wide.
-
-To change themes, simply change your wallpaper. The bar will adapt immediately.
+Each image shows the same bar with a different wallpaper. The color scheme is automatically extracted from the wallpaper using Wallust - no configuration needed. Change your wallpaper, and the bar instantly adapts with matching colors.
