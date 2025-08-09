@@ -1,0 +1,128 @@
+{
+  "bar": {
+    "position": "top",
+    "height": 28,
+    "margin": 8,
+    "padding": {
+      "horizontal": 12,
+      "vertical": 4
+    },
+    "modules": {
+      "left": ["launcher", "shortcuts"],
+      "center": [],
+      "right": ["updates", "hardware", "network", "volume", "clock", "power"]
+    }
+  },
+  "appearance": {
+    "fontSize": 14,
+    "fontFamily": "JetBrainsMono Nerd Font",
+    "fontWeight": "bold",
+    "borderRadius": 10,
+    "opacity": 0.9
+  },
+  "modes": {
+    "programming": {
+      "name": "Programming",
+      "icon": "󰅬",
+      "keybind": "Super+Ctrl+P",
+      "notification": "Switched to Programming Mode"
+    },
+    "gaming": {
+      "name": "Gaming", 
+      "icon": "󰮂",
+      "keybind": "Super+Ctrl+G",
+      "notification": "Switched to Gaming Mode"
+    },
+    "focus": {
+      "name": "Focus",
+      "icon": "󰊠",
+      "keybind": "Super+Ctrl+F",
+      "notification": "Switched to Focus Mode",
+      "hideModules": ["updates", "network"]
+    },
+    "presentation": {
+      "name": "Presentation",
+      "icon": "󰐩",
+      "keybind": "Super+Ctrl+R",
+      "notification": "Switched to Presentation Mode",
+      "hideModules": ["updates"],
+      "showBattery": true
+    }
+  },
+  "hardware": {
+    "cpu": {
+      "enabled": true,
+      "showTemperature": true,
+      "showUsage": true,
+      "updateInterval": 2000,
+      "onClick": "alacritty --class=alacritty-monitor -e htop"
+    },
+    "gpu": {
+      "enabled": true,
+      "showTemperature": true,
+      "showWattage": true,
+      "showMemory": true,
+      "updateInterval": 1000,
+      "onClick": "nvidia-settings"
+    },
+    "ram": {
+      "enabled": true,
+      "showPercentage": true,
+      "showUsed": true,
+      "updateInterval": 2000,
+      "onClick": "alacritty --class=alacritty-monitor -e htop"
+    },
+    "network": {
+      "enabled": true,
+      "showSpeed": true,
+      "updateInterval": 2000,
+      "onClick": "alacritty --class=alacritty-monitor -e bmon"
+    }
+  },
+  "widgets": {
+    "clock": {
+      "format24h": true,
+      "showDate": true,
+      "dateFormat": "%a %b %d",
+      "onClick": "gnome-calendar"
+    },
+    "volume": {
+      "scrollStep": 5,
+      "onClick": "pavucontrol"
+    },
+    "updates": {
+      "checkInterval": 300000,
+      "hideWhenZero": true,
+      "onClick": "alacritty --class=alacritty-monitor -e paru"
+    },
+    "power": {
+      "useWallustAccent": true,
+      "onClick": "wlogout --protocol layer-shell"
+    },
+    "launcher": {
+      "icon": "󱓞",
+      "onClick": "wofi --show drun --allow-images"
+    },
+    "shortcuts": {
+      "icon": "󰌌",
+      "showOverlay": true
+    }
+  },
+  "wallust": {
+    "autoReload": true,
+    "colorScheme": "~/.cache/wallust/ags-colors.scss",
+    "transitions": {
+      "enabled": true,
+      "duration": "0.3s",
+      "easing": "ease"
+    }
+  },
+  "advanced": {
+    "logLevel": "info",
+    "experimental": {
+      "systemTray": false,
+      "mediaPlayer": false,
+      "notificationCenter": false
+    }
+  }
+}

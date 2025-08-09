@@ -1,10 +1,22 @@
-# AGS Hyprland Config
+# AGS Hyprland Config - Dynamic Wallpaper Theming
 
-A modern, dynamic status bar for Hyprland using AGS (Aylur's Gtk Shell) with automatic theming based on wallpaper colors.
+🎨 **Your wallpaper IS your theme!** A modern status bar for Hyprland that automatically adapts its entire color scheme based on your wallpaper. Every wallpaper change brings a fresh, perfectly matched interface.
+
+![Dynamic Theming Demo](https://github.com/jeffhallyburton/ags-hyprland-config/wiki/images/theming-demo.gif)
+
+## 🌈 Dynamic Wallpaper Theming
+
+Unlike traditional themes, this bar doesn't come with predefined color schemes. Instead, it intelligently extracts colors from your wallpaper and creates a cohesive, beautiful theme in real-time. Change your wallpaper, and watch your entire interface transform!
+
+### How It Works
+1. Set any wallpaper you like
+2. Wallust analyzes the image and extracts a color palette
+3. The bar instantly updates with perfectly matched colors
+4. All widgets, text, and accents coordinate beautifully
 
 ## Features
 
-- **Dynamic Theming**: Automatically adapts colors based on your wallpaper using Wallust
+- **🎨 Wallpaper-Driven Theming**: No manual theme selection needed - your wallpaper decides everything
 - **Mode Switching**: Toggle between Programming and Gaming modes with different color schemes
   - `Super + Ctrl + P` - Programming Mode
   - `Super + Ctrl + G` - Gaming Mode

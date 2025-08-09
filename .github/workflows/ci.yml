@@ -1,0 +1,177 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  lint:
+    name: Lint TypeScript/JavaScript
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: |
+        npm install -g typescript eslint
+        
+    - name: Check TypeScript syntax
+      run: |
+        find . -name "*.ts" -o -name "*.tsx" | xargs -I {} tsc --noEmit --allowJs --jsx react {}
+      continue-on-error: true
+        
+  shellcheck:
+    name: ShellCheck Scripts
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Run ShellCheck
+      uses: ludeeus/action-shellcheck@master
+      with:
+        scandir: '.'
+        ignore_paths: 'node_modules'
+        
+  test-install-arch:
+    name: Test Installation - Arch Linux
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Update system
+      run: |
+        pacman -Syu --noconfirm
+        pacman -S --noconfirm git sudo base-devel
+        
+    - name: Create test user
+      run: |
+        useradd -m testuser
+        echo "testuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+        
+    - name: Test installation script
+      run: |
+        cp -r . /home/testuser/ags-config
+        chown -R testuser:testuser /home/testuser/ags-config
+        su - testuser -c "cd ~/ags-config && ./install-universal.sh --dry-run"
+      continue-on-error: true
+        
+  test-install-fedora:
+    name: Test Installation - Fedora
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Update system
+      run: |
+        dnf update -y
+        dnf install -y git sudo
+        
+    - name: Create test user
+      run: |
+        useradd -m testuser
+        echo "testuser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+        
+    - name: Test installation script
+      run: |
+        cp -r . /home/testuser/ags-config
+        chown -R testuser:testuser /home/testuser/ags-config
+        su - testuser -c "cd ~/ags-config && ./install-universal.sh --dry-run"
+      continue-on-error: true
+        
+  test-install-ubuntu:
+    name: Test Installation - Ubuntu
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Test installation script
+      run: |
+        ./install-universal.sh --dry-run
+      continue-on-error: true
+        
+  validate-json:
+    name: Validate JSON Configuration
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Validate config.json
+      run: |
+        python3 -m json.tool config.json > /dev/null
+        echo "✓ config.json is valid"
+        
+  check-scss:
+    name: Check SCSS Files
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install sass
+      run: npm install -g sass
+      
+    - name: Check SCSS syntax
+      run: |
+        for file in *.scss; do
+          if [ -f "$file" ]; then
+            echo "Checking $file..."
+            # Check syntax without compiling (dry run)
+            sass --no-source-map --style=compressed "$file" /dev/null 2>&1 || true
+          fi
+        done
+        
+  documentation:
+    name: Check Documentation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check for required files
+      run: |
+        files=("README.md" "LICENSE" ".gitignore" "config.json")
+        for file in "${files[@]}"; do
+          if [ ! -f "$file" ]; then
+            echo "❌ Missing required file: $file"
+            exit 1
+          else
+            echo "✓ Found $file"
+          fi
+        done
+        
+    - name: Check README links
+      run: |
+        # Extract URLs from README
+        grep -Eo 'https?://[^)]+' README.md | while read -r url; do
+          # Skip localhost and example URLs
+          if [[ "$url" == *"localhost"* ]] || [[ "$url" == *"example.com"* ]]; then
+            continue
+          fi
+          # Check if URL is reachable (timeout after 5 seconds)
+          if curl --output /dev/null --silent --head --fail --max-time 5 "$url"; then
+            echo "✓ $url"
+          else
+            echo "⚠ Couldn't reach: $url"
+          fi
+        done
+      continue-on-error: true
