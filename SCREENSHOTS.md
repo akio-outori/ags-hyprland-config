@@ -1,6 +1,6 @@
 # Screenshot Gallery
 
-A collection of examples showing how the bar adapts to different wallpapers.
+Examples showing the bar with different wallpapers and color adaptations.
 
 ![Example 1](screenshots/example-1.png)
 
@@ -10,12 +10,6 @@ A collection of examples showing how the bar adapts to different wallpapers.
 
 ![Example 4](screenshots/example-4.png)
 
-![Example 5](screenshots/example-5.png)
-
-![Example 6](screenshots/example-6.png)
-
-![Example 7](screenshots/example-7.png)
-
 ## About
 
-Each image shows the same bar with a different wallpaper. The color scheme is automatically extracted from the wallpaper using Wallust - no configuration needed. Change your wallpaper, and the bar instantly adapts with matching colors.
+Each image shows the bar with a different wallpaper. The color scheme is automatically extracted from the wallpaper using Wallust. Change your wallpaper, and the bar instantly adapts with matching colors.
