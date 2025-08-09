@@ -4,6 +4,8 @@
 
 ![Dynamic Theming Demo](https://github.com/jeffhallyburton/ags-hyprland-config/wiki/images/theming-demo.gif)
 
+📸 **[View Screenshot Gallery](SCREENSHOTS.md)** - See the bar in action with different wallpapers!
+
 ## 🌈 Dynamic Wallpaper Theming
 
 Unlike traditional themes, this bar doesn't come with predefined color schemes. Instead, it intelligently extracts colors from your wallpaper and creates a cohesive, beautiful theme in real-time. Change your wallpaper, and watch your entire interface transform!
