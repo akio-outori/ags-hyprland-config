@@ -1,6 +1,6 @@
 import { App, Astal, Gtk, Gdk } from "astal/gtk3"
 import { Variable, bind } from "astal"
-import { CompactMediaPlayer } from "./MediaPlayerSimple"
+import { toggleShortcuts } from "./ShortcutsOverlay"
 
 // Time and date
 const time = Variable("--:--").poll(1000, "date '+%H:%M'")
@@ -64,8 +64,10 @@ const activeWorkspace = Variable("1").poll(500, ["bash", "-c",
     "hyprctl activewindow -j 2>/dev/null | jq -r '.workspace.id // 1'"
 ])
 
-// Profile mode (programming/gaming)
-const profileMode = Variable("programming")
+// Profile mode (programming/gaming) - reads from file to sync with hotkeys
+const profileMode = Variable("programming").poll(500, ["bash", "-c", 
+    "cat /tmp/ags-profile-mode 2>/dev/null || echo programming"
+])
 
 // Widget Components
 function ProfileSwitch() {
@@ -198,7 +200,7 @@ function LauncherButton() {
 function ShortcutsButton() {
     return <button 
         className="shortcuts-btn"
-        onClicked={`alacritty --class=alacritty-help -e bash -c 'echo "Hyprland Keyboard Shortcuts"; echo; grep "^bind = " ~/.config/hypr/hyprland.conf | sed "s/bind = //" | column -t -s, | less'`}
+        onClicked={() => toggleShortcuts()}
     >
         <label label="󰌌" />
     </button>
@@ -214,7 +216,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
         anchor={TOP}
         layer={Astal.Layer.TOP}
         application={App}>
-        <centerbox className="bar-container">
+        <centerbox className={bind(profileMode).as(mode => `bar-container ${mode}-mode`)}>
             <box className="left-modules">
                 <LauncherButton />
                 <ShortcutsButton />
