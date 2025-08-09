@@ -12,7 +12,7 @@ sleep 1
 # Monitor loop
 while true; do
     echo "AGS Monitor: Starting AGS bar..."
-    cd ~/.config/ags && ags run app-enhanced.ts
+    cd ~/.config/ags && ags run app.ts
     
     EXIT_CODE=$?
     echo "AGS Monitor: AGS exited with code $EXIT_CODE"

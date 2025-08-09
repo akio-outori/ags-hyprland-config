@@ -56,7 +56,6 @@ export function loadConfig(): Config {
     const configPath = `${process.env.HOME}/.config/ags/ags-hyprland-config/config.json`
     const content = readFile(configPath)
     configCache = JSON.parse(content)
-    console.log("Config loaded successfully")
     return configCache!
   } catch (error) {
     console.error("Failed to load config, using defaults:", error)

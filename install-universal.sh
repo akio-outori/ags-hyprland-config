@@ -311,7 +311,7 @@ setup_hyprland() {
             cat >> "$HYPR_CONFIG" << 'EOF'
 
 # AGS Hyprland Config Integration
-exec-once = cd ~/.config/ags/ags-hyprland-config && ags run app-enhanced.ts
+exec-once = cd ~/.config/ags/ags-hyprland-config && ags run app.ts
 exec-once = swww-daemon
 
 # Mode switching keybinds
@@ -328,7 +328,7 @@ EOF
     else
         print_error "Hyprland config not found at $HYPR_CONFIG"
         print_info "Please add the following to your Hyprland config manually:"
-        echo "exec-once = cd ~/.config/ags/ags-hyprland-config && ags run app-enhanced.ts"
+        echo "exec-once = cd ~/.config/ags/ags-hyprland-config && ags run app.ts"
     fi
 }
 

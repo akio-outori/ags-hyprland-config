@@ -8,191 +8,286 @@ window {
     background: transparent;
 }
 
-window.Bar {
-    background: transparent;
-    font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: #{$text};
-}
-
-.bar-content {
-    background: #{$bar-bg};
-    opacity: 0.92;
-    border-radius: 18px;
-    margin: 8px 0;
-    padding: 7px 14px;
-    min-height: 34px;
-    min-width: 780px;
-    border: 2px solid #{$bar-border};
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-
-.left {
-    padding: 0px 8px;
-}
-
-.center {
-    padding: 0px;
-}
-
-.right {
-    padding: 0px 8px;
-    min-width: 60px;
-}
-
-.launcher {
-    color: #{$bar-bg};
-    background: #{$accent};
-    border-radius: 12px;
-    padding: 6px 14px;
-    margin-right: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    
-    &:hover {
-        background: #{$accent2};
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
-    }
-}
-
-.clock-box {
-    background: #{$widget-bg};
-    opacity: 0.8;
-    border-radius: 12px;
-    padding: 6px 16px;
-    min-width: 100px;
-    border: 1px solid #{$accent};
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.clock {
-    color: #{$text};
-    margin-right: 10px;
-    font-weight: 700;
+window.BarEnhanced {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
     font-size: 14px;
-    letter-spacing: 0.5px;
+    font-weight: bold;
+    color: #{$text};
 }
 
-.date {
-    color: #{$text-dim};
-    font-size: 12px;
-    font-weight: 500;
+.bar-container {
+    background-color: #{$bar-bg};
+    opacity: 0.9;
+    border-radius: 10px;
+    margin: 8px 2px;
+    padding: 4px 12px;
+    min-height: 28px;
+    transition: all 0.3s ease;
 }
 
-.date-btn {
-    background: transparent;
-    padding: 0;
-    margin: 0;
+/* Programming mode - cooler theme */
+.bar-container.programming-mode {
+    background-color: #{$bar-bg};
+    color: #{$text};
+}
+
+/* Gaming mode - warmer/more vibrant theme */
+.bar-container.gaming-mode {
+    background-color: #{$accent};
+    color: #{$bar-bg};
     
-    &:hover .date {
+    .hw-widget, .network-monitor, .volume-control, 
+    .time-display, .launcher-btn, .shortcuts-btn {
+        color: #{$bar-bg};
+    }
+    
+    .hw-widget:hover, .network-monitor:hover, 
+    .volume-control:hover, .time-display:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #{$text};
+    }
+    
+    .power-menu {
+        color: #{$text};  /* Use text color in gaming mode for contrast */
+    }
+    
+    .power-menu:hover {
+        background-color: #{$text};
+        opacity: 0.3;
         color: #{$accent};
     }
 }
 
-.network {
-    background: #{$widget-bg};
-    opacity: 0.75;
-    border-radius: 10px;
-    padding: 6px 12px;
-    margin: 0px 3px;
-    min-width: 95px;
-    color: #{$text};
-    font-size: 11px;
-    font-weight: 600;
-    border: 1px solid #{$accent};
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    
-    &:hover {
-        background: #{$accent};
-        opacity: 0.9;
-        border-color: #{$accent2};
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    }
+.left-modules {
+    padding-right: 8px;
 }
 
-.cpu {
-    background: #{$widget-bg};
-    opacity: 0.75;
-    border-radius: 10px;
-    padding: 6px 11px;
-    margin: 0px 3px;
-    min-width: 60px;
-    color: #{$text};
-    font-size: 11px;
-    font-weight: 600;
-    border: 1px solid #{$accent};
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    
-    &:hover {
-        background: #{$accent};
-        opacity: 0.9;
-        border-color: #{$accent2};
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    }
+.center-modules {
+    padding: 0px;
 }
 
-.volume {
-    background: #{$widget-bg};
-    opacity: 0.75;
-    border-radius: 10px;
-    padding: 6px 11px;
-    margin: 0px 3px;
-    min-width: 60px;
-    color: #{$text};
-    font-size: 11px;
-    font-weight: 600;
-    border: 1px solid #{$accent};
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    
-    &:hover {
-        background: #{$accent};
-        opacity: 0.9;
-        border-color: #{$accent2};
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    }
+.right-modules {
+    padding-left: 16px;
 }
 
-.updates {
-    background: #{$widget-bg};
-    opacity: 0.75;
-    border-radius: 10px;
-    padding: 6px 11px;
-    margin: 0px 3px;
-    min-width: 40px;
-    color: #{$text};
-    font-size: 11px;
-    font-weight: 600;
-    border: 1px solid #{$accent};
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    
-    &:hover {
-        background: #{$accent};
-        opacity: 0.9;
-        border-color: #{$accent2};
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    }
-}
-
-.power-btn {
-    color: #{$text};
-    background: #{$urgent};
-    opacity: 0.8;
-    border-radius: 12px;
-    padding: 6px 14px;
-    margin-left: 8px;
-    font-size: 11px;
+/* Launcher button */
+.launcher-btn {
+    color: #{$accent};
+    background: transparent;
+    border-radius: 6px;
+    padding: 1px 6px;
+    font-size: 16px;
     font-weight: 700;
-    letter-spacing: 0.5px;
-    border: 1px solid #{$urgent};
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    
-    &:hover {
-        background: #{$urgent};
-        opacity: 1;
-        border-color: #{$accent};
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
-    }
+}
+
+.launcher-btn:hover {
+    color: #{$accent2};
+    background-color: #{$widget-bg};
+    opacity: 0.5;
+}
+
+/* Shortcuts help button */
+.shortcuts-btn {
+    color: #{$text};
+    background: transparent;
+    border-radius: 6px;
+    padding: 1px 6px;
+    margin-left: 4px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.shortcuts-btn:hover {
+    color: #{$accent};
+    background-color: #{$widget-bg};
+    opacity: 0.5;
+}
+
+/* Hardware monitor widgets */
+.hardware-monitor {
+    padding: 0px 2px;
+}
+
+.hw-widget {
+    background: transparent;
+    padding: 2px 4px;
+    margin: 0px 5px;
+    min-width: 100px;
+    color: #{$text};
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+.hw-widget:hover {
+    background-color: #{$widget-bg};
+    opacity: 0.7;
+    color: #{$accent};
+}
+
+/* Network monitor */
+.network-monitor {
+    background: transparent;
+    padding: 2px 5px;
+    margin: 0px 2px;
+    min-width: 140px;
+    color: #{$text};
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+.network-monitor:hover {
+    background-color: #{$widget-bg};
+    opacity: 0.7;
+    color: #{$accent};
+}
+
+/* Volume control */
+.volume-control {
+    background: transparent;
+    padding: 2px 4px;
+    margin: 0px 2px;
+    min-width: 60px;
+    color: #{$text};
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+.volume-control:hover {
+    background-color: #{$widget-bg};
+    opacity: 0.7;
+    color: #{$accent};
+}
+
+/* Updates widget */
+.updates-widget {
+    background: transparent;
+    padding: 0px;
+    margin: 0px;
+    min-width: 0px;
+    color: transparent;
+    font-size: 0px;
+    border-radius: 8px;
+}
+
+.updates-widget.has-updates {
+    color: #{$accent};
+    background: transparent;
+    padding: 2px 5px;
+    margin: 0px 2px;
+    min-width: 45px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.updates-widget:hover {
+    color: #{$accent2};
+}
+
+/* Clock widget */
+.clock-widget {
+    background: transparent;
+    padding: 0px;
+    margin: 0px 3px;
+    border-radius: 8px;
+}
+
+.time-display {
+    padding: 2px 10px;
+    min-width: 165px;
+    color: #{$text};
+    font-size: 14px;
+    font-weight: 700;
+    background: transparent;
+    border-radius: 6px;
+}
+
+.time-display:hover {
+    color: #{$accent};
+}
+
+/* Power menu */
+.power-menu {
+    color: #{$accent};  /* Use wallust accent color */
+    background: transparent;
+    padding: 2px 8px;
+    margin-left: 4px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+.power-menu:hover {
+    background-color: #{$accent};
+    opacity: 0.9;
+    color: #{$bar-bg};
+}
+
+/* Shortcuts Overlay */
+window.ShortcutsOverlay {
+    background: transparent;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+}
+
+.shortcuts-container {
+    background-color: #{$bar-bg};
+    opacity: 0.95;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px;
+    min-width: 600px;
+    min-height: 400px;
+}
+
+.shortcuts-header {
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #{$widget-bg};
+}
+
+.shortcuts-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #{$accent};
+}
+
+.shortcuts-close {
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #{$text};
+}
+
+.shortcuts-close:hover {
+    background-color: #{$widget-bg};
+}
+
+.shortcuts-scroll {
+    min-height: 300px;
+}
+
+.shortcuts-list {
+    padding: 10px;
+}
+
+.shortcut-row {
+    padding: 8px 12px;
+    margin: 2px 0;
+    border-radius: 6px;
+}
+
+.shortcut-row:hover {
+    background-color: #{$widget-bg};
+}
+
+.shortcut-key {
+    color: #{$accent2};
+    font-weight: bold;
+    min-width: 200px;
+}
+
+.shortcut-action {
+    color: #{$text};
+    padding-left: 20px;
 }

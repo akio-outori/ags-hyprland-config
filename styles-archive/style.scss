@@ -23,7 +23,7 @@ window.Bar {
     margin: 8px 0;
     padding: 7px 14px;
     min-height: 34px;
-    min-width: 720px;
+    min-width: 780px;
     border: 2px solid #{$bar-border};
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
@@ -38,6 +38,7 @@ window.Bar {
 
 .right {
     padding: 0px 8px;
+    min-width: 60px;
 }
 
 .launcher {
@@ -62,6 +63,7 @@ window.Bar {
     opacity: 0.8;
     border-radius: 12px;
     padding: 6px 16px;
+    min-width: 100px;
     border: 1px solid #{$accent};
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
@@ -94,8 +96,9 @@ window.Bar {
     background: #{$widget-bg};
     opacity: 0.75;
     border-radius: 10px;
-    padding: 6px 11px;
+    padding: 6px 12px;
     margin: 0px 3px;
+    min-width: 95px;
     color: #{$text};
     font-size: 11px;
     font-weight: 600;
@@ -116,6 +119,7 @@ window.Bar {
     border-radius: 10px;
     padding: 6px 11px;
     margin: 0px 3px;
+    min-width: 60px;
     color: #{$text};
     font-size: 11px;
     font-weight: 600;
@@ -136,6 +140,28 @@ window.Bar {
     border-radius: 10px;
     padding: 6px 11px;
     margin: 0px 3px;
+    min-width: 60px;
+    color: #{$text};
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid #{$accent};
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    
+    &:hover {
+        background: #{$accent};
+        opacity: 0.9;
+        border-color: #{$accent2};
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+}
+
+.updates {
+    background: #{$widget-bg};
+    opacity: 0.75;
+    border-radius: 10px;
+    padding: 6px 11px;
+    margin: 0px 3px;
+    min-width: 40px;
     color: #{$text};
     font-size: 11px;
     font-weight: 600;

@@ -152,7 +152,7 @@ You can create wallpaper packs that work especially well:
 # Regenerate colors manually
 wallust run ~/Pictures/current-wallpaper.jpg
 # Restart AGS
-ags quit && cd ~/.config/ags/ags-hyprland-config && ags run app-enhanced.ts
+ags quit && cd ~/.config/ags/ags-hyprland-config && ags run app.ts
 ```
 
 ### Colors look wrong?
