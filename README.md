@@ -1,12 +1,10 @@
-# AGS Hyprland Config - Dynamic Wallpaper Theming
+# AGS Hyprland Config
 
-🎨 **Your wallpaper IS your theme!** A modern status bar for Hyprland that automatically adapts its entire color scheme based on your wallpaper. Every wallpaper change brings a fresh, perfectly matched interface.
+A modern status bar for Hyprland using AGS (Aylur's Gtk Shell) with automatic wallpaper-based theming. The bar automatically adapts its entire color scheme based on your current wallpaper.
 
-![Dynamic Theming Demo](https://github.com/jeffhallyburton/ags-hyprland-config/wiki/images/theming-demo.gif)
+**[View Screenshot Gallery](SCREENSHOTS.md)**
 
-📸 **[View Screenshot Gallery](SCREENSHOTS.md)** - See the bar in action with different wallpapers!
-
-## 🌈 Dynamic Wallpaper Theming
+## Dynamic Wallpaper Theming
 
 Unlike traditional themes, this bar doesn't come with predefined color schemes. Instead, it intelligently extracts colors from your wallpaper and creates a cohesive, beautiful theme in real-time. Change your wallpaper, and watch your entire interface transform!
 
@@ -18,7 +16,7 @@ Unlike traditional themes, this bar doesn't come with predefined color schemes. 
 
 ## Features
 
-- **🎨 Wallpaper-Driven Theming**: No manual theme selection needed - your wallpaper decides everything
+- **Wallpaper-Driven Theming**: Automatic color extraction from wallpaper using Wallust
 - **Mode Switching**: Toggle between Programming and Gaming modes with different color schemes
   - `Super + Ctrl + P` - Programming Mode
   - `Super + Ctrl + G` - Gaming Mode
@@ -32,8 +30,8 @@ Unlike traditional themes, this bar doesn't come with predefined color schemes. 
   - Clock opens calendar
   - App launcher opens wofi
   - Power button opens wlogout menu
-- **Smart Updates Widget**: Only shows when system updates are available
-- **Clean Minimal Design**: Borderless, modern aesthetic with readable typography
+- **Smart Updates Widget**: Only displays when system updates are available
+- **Clean Minimal Design**: Borderless, modern aesthetic with readable typography  
 - **Wallpaper Integration**: Seamless integration with swww for wallpaper management
 
 ## Screenshots

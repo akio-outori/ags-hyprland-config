@@ -4,18 +4,14 @@ import { Variable, bind } from "astal"
 const isVisible = Variable(false)
 
 const shortcuts = [
-    { keys: "Super + Enter", action: "Open Terminal" },
     { keys: "Super + Q", action: "Close Window" },
-    { keys: "Super + D", action: "Show Applications" },
-    { keys: "Super + L", action: "Lock Screen" },
-    { keys: "Super + Shift + E", action: "Exit/Logout" },
     { keys: "Super + 1-9", action: "Switch Workspace" },
     { keys: "Super + Shift + 1-9", action: "Move Window to Workspace" },
-    { keys: "Super + Space", action: "Toggle Floating" },
+    { keys: "Super + V", action: "Toggle Floating" },
     { keys: "Super + F", action: "Toggle Fullscreen" },
-    { keys: "Super + Arrow Keys", action: "Focus Window" },
-    { keys: "Super + Alt + Arrow", action: "Resize Window" },
-    { keys: "Super + Mouse", action: "Move/Resize Window" },
+    { keys: "Super + Arrow Keys", action: "Move Focus" },
+    { keys: "Super + Shift + Arrow", action: "Move Window" },
+    { keys: "Super + Mouse Drag", action: "Move/Resize Window" },
     { keys: "Super + Ctrl + P", action: "Programming Mode" },
     { keys: "Super + Ctrl + G", action: "Gaming Mode" },
     { keys: "Escape", action: "Close This Overlay" }
