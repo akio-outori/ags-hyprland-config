@@ -31,7 +31,7 @@ function Clock() {
         <label className="clock" label={bind(time)} />
         <button 
             className="date-btn"
-            onClicked="gnome-calendar"
+            onClicked="gsimplecal"
         >
             <label className="date" label={bind(date)} />
         </button>
@@ -66,19 +66,20 @@ function VolumeControl() {
 }
 
 export default function Bar(gdkmonitor: Gdk.Monitor) {
-    const { TOP, LEFT, RIGHT } = Astal.WindowAnchor
+    const { TOP } = Astal.WindowAnchor
 
     return <window
         className="Bar"
         gdkmonitor={gdkmonitor}
         exclusivity={Astal.Exclusivity.EXCLUSIVE}
-        anchor={TOP | LEFT | RIGHT}
+        anchor={TOP}
+        layer={Astal.Layer.TOP}
         application={App}>
         <centerbox className="bar-content">
             <box className="left">
                 <button 
                     className="launcher"
-                    onClicked="wofi --show drun"
+                    onClicked="wofi --show drun --allow-images"
                 >
                     Apps
                 </button>
@@ -90,7 +91,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
                 <VolumeControl />
                 <button 
                     className="power-btn"
-                    onClicked="systemctl poweroff"
+                    onClicked="wlogout --protocol layer-shell"
                 >
                     Power
                 </button>

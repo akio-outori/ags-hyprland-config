@@ -4,17 +4,19 @@ A complete setup for AGS (Aylur's GTK Shell) status bar with dynamic wallust the
 
 ## Features
 
-- **AGS Status Bar** with rounded corners and dynamic theming
-- **Wallust Integration** - Colors automatically adapt to wallpaper
-- **Dynamic Wallpaper Rotation** with color scheme generation
+- **AGS Status Bar** with rounded corners, centered design, and dynamic theming
+- **Wallust Integration** - Colors automatically adapt to wallpaper with live updates
+- **Dynamic Wallpaper Rotation** with automatic AGS restart for color updates
 - **Clickable Widgets**: 
   - CPU usage opens htop in themed terminal
   - Network stats opens bmon in themed terminal  
-  - Date/time opens calendar
-  - Volume control
-  - App launcher and power menu
+  - Date/time opens gsimplecal popup calendar
+  - Volume control opens pavucontrol
+  - Apps button launches wofi (same as Super key)
+  - Power button opens wlogout menu
 - **Proper Terminal Integration** - Terminals tile naturally with wallust colors
 - **Stretch Wallpaper Mode** - Full screen coverage without black borders
+- **Minimal Shadow Artifacts** - Uses Hyprland layer rules (ignorealpha) for clean transparency
 
 ## Screenshots
 

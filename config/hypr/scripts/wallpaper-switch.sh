@@ -22,9 +22,10 @@ swww img "$WALLPAPER" --transition-type fade --transition-duration 1 --resize st
 # Generate new color scheme with wallust
 wallust run "$WALLPAPER"
 
-# Reload AGS to apply new colors
-pkill ags
-sleep 0.5
+# Force restart AGS to apply new colors
+killall -9 ags 2>/dev/null
+killall -9 gjs 2>/dev/null
+sleep 1
 ags run &
 
 echo "Wallpaper and colors updated!"

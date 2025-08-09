@@ -26,8 +26,9 @@ fi
 
 # 3. Start AGS bar (after colors are generated)
 echo "Starting AGS bar..."
-pkill ags 2>/dev/null
-sleep 0.5  # Small delay to ensure colors are written
+killall -9 ags 2>/dev/null
+killall -9 gjs 2>/dev/null
+sleep 1  # Ensure clean shutdown and colors are written
 ags run &
 
 # 4. Start wallpaper rotation (after a delay to not interfere with initial setup)
