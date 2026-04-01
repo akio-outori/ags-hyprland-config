@@ -17,7 +17,7 @@ fi
 echo "Switching to wallpaper: $WALLPAPER"
 
 # Set wallpaper with swww (stretch to fill screen)
-swww img "$WALLPAPER" --transition-type fade --transition-duration 1 --resize stretch
+awww img "$WALLPAPER" --transition-type fade --transition-duration 1 --resize stretch
 
 # Generate new color scheme with wallust
 wallust run "$WALLPAPER"
@@ -26,6 +26,6 @@ wallust run "$WALLPAPER"
 killall -9 ags 2>/dev/null
 killall -9 gjs 2>/dev/null
 sleep 1
-ags run &
+cd ~/.config/ags/ags-hyprland-config && ags run app.ts &
 
 echo "Wallpaper and colors updated!"
