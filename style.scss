@@ -25,38 +25,6 @@ window.BarEnhanced {
     transition: all 0.3s ease;
 }
 
-/* Programming mode - cooler theme */
-.bar-container.programming-mode {
-    background-color: #{$bar-bg};
-    color: #{$text};
-}
-
-/* Gaming mode - warmer/more vibrant theme */
-.bar-container.gaming-mode {
-    background-color: #{$accent};
-    color: #{$bar-bg};
-    
-    .hw-widget, .network-monitor, .volume-control, 
-    .time-display, .launcher-btn, .shortcuts-btn {
-        color: #{$bar-bg};
-    }
-    
-    .hw-widget:hover, .network-monitor:hover, 
-    .volume-control:hover, .time-display:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-        color: #{$text};
-    }
-    
-    .power-menu {
-        color: #{$text};  /* Use text color in gaming mode for contrast */
-    }
-    
-    .power-menu:hover {
-        background-color: #{$text};
-        opacity: 0.3;
-        color: #{$accent};
-    }
-}
 
 .left-modules {
     padding-right: 8px;
@@ -86,22 +54,6 @@ window.BarEnhanced {
     opacity: 0.5;
 }
 
-/* Shortcuts help button */
-.shortcuts-btn {
-    color: #{$text};
-    background: transparent;
-    border-radius: 6px;
-    padding: 1px 6px;
-    margin-left: 4px;
-    font-size: 16px;
-    font-weight: 700;
-}
-
-.shortcuts-btn:hover {
-    color: #{$accent};
-    background-color: #{$widget-bg};
-    opacity: 0.5;
-}
 
 /* Hardware monitor widgets */
 .hardware-monitor {
@@ -225,69 +177,3 @@ window.BarEnhanced {
     color: #{$bar-bg};
 }
 
-/* Shortcuts Overlay */
-window.ShortcutsOverlay {
-    background: transparent;
-    font-family: "JetBrainsMono Nerd Font", sans-serif;
-}
-
-.shortcuts-container {
-    background-color: #{$bar-bg};
-    opacity: 0.95;
-    border-radius: 12px;
-    padding: 20px;
-    margin: 20px;
-    min-width: 600px;
-    min-height: 400px;
-}
-
-.shortcuts-header {
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #{$widget-bg};
-}
-
-.shortcuts-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #{$accent};
-}
-
-.shortcuts-close {
-    padding: 4px 8px;
-    border-radius: 4px;
-    color: #{$text};
-}
-
-.shortcuts-close:hover {
-    background-color: #{$widget-bg};
-}
-
-.shortcuts-scroll {
-    min-height: 300px;
-}
-
-.shortcuts-list {
-    padding: 10px;
-}
-
-.shortcut-row {
-    padding: 8px 12px;
-    margin: 2px 0;
-    border-radius: 6px;
-}
-
-.shortcut-row:hover {
-    background-color: #{$widget-bg};
-}
-
-.shortcut-key {
-    color: #{$accent2};
-    font-weight: bold;
-    min-width: 200px;
-}
-
-.shortcut-action {
-    color: #{$text};
-    padding-left: 20px;
-}
