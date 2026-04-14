@@ -15,7 +15,7 @@ echo
 
 # Sanity check: prereqs
 missing=()
-for bin in ags wallust swww wofi wlogout amdgpu_top jq; do
+for bin in ags wallust awww wofi wlogout amdgpu_top jq; do
     command -v "$bin" >/dev/null 2>&1 || missing+=("$bin")
 done
 if ((${#missing[@]})); then
@@ -76,6 +76,18 @@ rsync -a --delete \
     cp "$VARIANT_DIR/config.json" "$HOME/.config/ags/ags-hyprland-config/config.json" && \
     echo "   ✓ config.json (AMD override)"
 
+# AGS 3 project plumbing: node_modules symlinks + generated types
+AGS_DIR="$HOME/.config/ags/ags-hyprland-config"
+mkdir -p "$AGS_DIR/node_modules"
+ln -sfn /usr/share/ags/js "$AGS_DIR/node_modules/ags"
+ln -sfn /usr/share/ags/js/node_modules/gnim "$AGS_DIR/node_modules/gnim"
+echo "   ✓ node_modules symlinks"
+
+if [ ! -d "$AGS_DIR/@girs" ]; then
+    echo "   ⏳ generating type stubs (ags types)..."
+    ( cd "$AGS_DIR" && ags types >/dev/null 2>&1 ) && echo "   ✓ @girs generated" || echo "   ⚠ ags types failed (bar may still run)"
+fi
+
 # --- Wallust config (base only; no variant override yet) ---
 if [ -d "$REPO_ROOT/config/wallust" ]; then
     cp -r "$REPO_ROOT/config/wallust/." "$HOME/.config/wallust/"
@@ -86,7 +98,11 @@ fi
 if [ -d "$REPO_ROOT/config/hypr/scripts" ]; then
     cp "$REPO_ROOT/config/hypr/scripts/"* "$HOME/.config/hypr/scripts/"
     chmod +x "$HOME/.config/hypr/scripts/"*.sh
-    echo "   ✓ hypr/scripts"
+    # Base startup.sh uses 'cd ~/.config/ags' but the project lives in a
+    # subdir. Retarget it.
+    sed -i 's|cd ~/.config/ags && ags run app.ts|cd ~/.config/ags/ags-hyprland-config \&\& ags run app.ts|g' \
+        "$HOME/.config/hypr/scripts/startup.sh"
+    echo "   ✓ hypr/scripts (startup.sh path fixed)"
 fi
 
 # --- Hyprland conf: append variant additions (deduped by marker) ---

@@ -27,11 +27,13 @@ variants/framework-desktop/
 ## Prerequisites
 
 ```
-paru -S aylurs-gtk-shell-git wallust swww wlogout hyprlauncher
-sudo pacman -S waybar pavucontrol brightnessctl playerctl grim slurp \
+paru -S aylurs-gtk-shell-git wallust wlogout hyprlauncher
+sudo pacman -S awww pavucontrol brightnessctl playerctl grim slurp \
                wl-clipboard cliphist ttf-jetbrains-mono-nerd noto-fonts-emoji \
-               ttf-font-awesome lm_sensors gnome-calendar bmon amdgpu_top
+               ttf-font-awesome lm_sensors gnome-calendar bmon amdgpu_top jq
 ```
+
+Note: scripts use `awww` (not `swww`). `waybar` is not required — AGS replaces it.
 
 ## Adding more variants later
 
