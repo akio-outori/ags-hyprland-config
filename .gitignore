@@ -1,6 +1,9 @@
 # Node modules
 node_modules/
 
+# AGS generated type artifacts (regenerate with `ags types`)
+@girs/
+
 # Build outputs
 dist/
 build/
