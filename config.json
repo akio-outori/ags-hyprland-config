@@ -28,7 +28,7 @@
       "notification": "Switched to Programming Mode"
     },
     "gaming": {
-      "name": "Gaming",
+      "name": "Gaming", 
       "icon": "󰮂",
       "keybind": "Super+Ctrl+G",
       "notification": "Switched to Gaming Mode"
@@ -45,7 +45,8 @@
       "icon": "󰐩",
       "keybind": "Super+Ctrl+R",
       "notification": "Switched to Presentation Mode",
-      "hideModules": ["updates"]
+      "hideModules": ["updates"],
+      "showBattery": true
     }
   },
   "hardware": {
@@ -58,13 +59,11 @@
     },
     "gpu": {
       "enabled": true,
-      "vendor": "amd",
-      "source": "amdgpu_top",
       "showTemperature": true,
       "showWattage": true,
       "showMemory": true,
       "updateInterval": 1000,
-      "onClick": "amdgpu_top --gui"
+      "onClick": "nvidia-settings"
     },
     "ram": {
       "enabled": true,
