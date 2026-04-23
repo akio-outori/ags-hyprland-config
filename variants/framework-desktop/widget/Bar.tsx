@@ -99,7 +99,7 @@ function HardwareMonitor() {
       </button>
       <button
         class="hw-widget gpu-widget"
-        onClicked={() => execAsync("alacritty --class=alacritty-monitor -e amdgpu_top")}
+        onClicked={() => execAsync("amdgpu_top --gui")}
       >
         <label label={hwInfo.as((v) => {
           const usedGiB = (parseInt(v.vramUsedMiB) / 1024).toFixed(1)

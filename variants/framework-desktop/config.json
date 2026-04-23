@@ -64,7 +64,7 @@
       "showWattage": true,
       "showMemory": true,
       "updateInterval": 1000,
-      "onClick": "alacritty --class=alacritty-monitor -e amdgpu_top"
+      "onClick": "amdgpu_top --gui"
     },
     "ram": {
       "enabled": true,
