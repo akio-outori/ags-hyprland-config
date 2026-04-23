@@ -7,25 +7,31 @@ import { execAsync } from "ags/process"
 const time = createPoll("--:--", 1000, "date '+%H:%M'")
 const date = createPoll("", 60000, "date '+%a %b %d'")
 
-// Hardware monitoring
-const gpuInfo = createPoll(
-  { temp: "0", wattage: "0", mem: "0/0" },
+// Unified AMD hardware telemetry (single amdgpu_top call per poll).
+// Strix Halo APU exposes both CPU Tctl and GPU Edge temp in one JSON dump.
+type HwInfo = {
+  cpuTemp: string
+  gpuTemp: string
+  gpuWatt: string
+  vramUsedMiB: string
+  vramTotalMiB: string
+}
+
+const hwInfo = createPoll<HwInfo>(
+  { cpuTemp: "0", gpuTemp: "0", gpuWatt: "0", vramUsedMiB: "0", vramTotalMiB: "0" },
   1000,
   ["bash", "-c", `
-    nvidia-smi --query-gpu=temperature.gpu,power.draw,memory.used,memory.total --format=csv,noheader,nounits |
-    awk -F', ' '{printf "{\\"temp\\": \\"%s\\", \\"wattage\\": \\"%d\\", \\"mem\\": \\"%d/%d\\"}", $1, int($2), $3, $4}'
+    amdgpu_top -J -n 1 2>/dev/null | jq -c '{
+      cpuTemp: ((.devices[0].Sensors."CPU Tctl".value // 0) | tostring),
+      gpuTemp: ((.devices[0].Sensors."Edge Temperature".value // 0) | tostring),
+      gpuWatt: ((.devices[0].Sensors."Average Power".value // 0) | tostring),
+      vramUsedMiB: ((.devices[0].VRAM."Total VRAM Usage".value // 0) | tostring),
+      vramTotalMiB: ((.devices[0].VRAM."Total VRAM".value // 0) | tostring)
+    }'
   `],
   (out) => {
-    try {
-      const parsed = JSON.parse(out)
-      return {
-        temp: parsed.temp || "0",
-        wattage: parsed.wattage || "0",
-        mem: parsed.mem || "0/0",
-      }
-    } catch {
-      return { temp: "0", wattage: "0", mem: "0/0" }
-    }
+    try { return JSON.parse(out) as HwInfo }
+    catch { return { cpuTemp: "0", gpuTemp: "0", gpuWatt: "0", vramUsedMiB: "0", vramTotalMiB: "0" } }
   },
 )
 
@@ -37,17 +43,6 @@ const ramInfo = createPoll(
   ],
   (out) => {
     try { return JSON.parse(out) } catch { return { used: "0", total: "0", percent: "0" } }
-  },
-)
-
-const cpuTemp = createPoll(
-  { ccd1: "0", ccd2: "0" },
-  1000,
-  ["bash", "-c",
-    `sensors | grep 'Tccd' | awk '{gsub(/[°C+]/, "", $2); temps[NR]=int($2)} END {print "{\\"ccd1\\": \\"" temps[1] "\\", \\"ccd2\\": \\"" temps[2] "\\"}"}'`,
-  ],
-  (out) => {
-    try { return JSON.parse(out) } catch { return { ccd1: "0", ccd2: "0" } }
   },
 )
 
@@ -90,7 +85,6 @@ const updatesCount = createPoll("0", 300000, ["bash", "-c",
   "checkupdates 2>/dev/null | wc -l || paru -Qu 2>/dev/null | wc -l || echo 0",
 ])
 
-// Widget Components
 function HardwareMonitor() {
   return (
     <box class="hardware-monitor">
@@ -100,14 +94,17 @@ function HardwareMonitor() {
       >
         <box>
           <label label={cpuUsage.as((v) => `󰍛 CPU ${v}% `)} />
-          <label label={cpuTemp.as((v) => `${v.ccd1}°/${v.ccd2}°C`)} />
+          <label label={hwInfo.as((v) => `${v.cpuTemp}°C`)} />
         </box>
       </button>
       <button
         class="hw-widget gpu-widget"
-        onClicked={() => execAsync("nvidia-settings")}
+        onClicked={() => execAsync("amdgpu_top --gui")}
       >
-        <label label={gpuInfo.as((v) => `󰢮 GPU ${v.wattage}W ${v.temp}°C`)} />
+        <label label={hwInfo.as((v) => {
+          const usedGiB = (parseInt(v.vramUsedMiB) / 1024).toFixed(1)
+          return `󰢮 GPU ${v.gpuWatt}W ${v.gpuTemp}°C ${usedGiB}G`
+        })} />
       </button>
       <button
         class="hw-widget ram-widget"
@@ -132,10 +129,7 @@ function NetworkMonitor() {
 
 function VolumeControl() {
   return (
-    <button
-      class="volume-control"
-      onClicked={() => execAsync("pavucontrol")}
-    >
+    <button class="volume-control" onClicked={() => execAsync("pavucontrol")}>
       <label label={volume.as((v) => {
         const lvl = parseInt(v.level)
         const icon = v.muted ? "󰖁" : lvl > 50 ? "󰕾" : lvl > 0 ? "󰖀" : "󰕿"
@@ -148,10 +142,7 @@ function VolumeControl() {
 function Clock() {
   return (
     <box class="clock-widget">
-      <button
-        class="time-display"
-        onClicked={() => execAsync("gnome-calendar")}
-      >
+      <button class="time-display" onClicked={() => execAsync("gnome-calendar")}>
         <label label={time.as((t) => `${t} ${date.get()}`)} />
       </button>
     </box>
@@ -171,10 +162,7 @@ function UpdateNotifier() {
 
 function PowerMenu() {
   return (
-    <button
-      class="power-menu"
-      onClicked={() => execAsync("wlogout --protocol layer-shell")}
-    >
+    <button class="power-menu" onClicked={() => execAsync("wlogout --protocol layer-shell")}>
       <label label="󰐥" />
     </button>
   )
@@ -182,10 +170,7 @@ function PowerMenu() {
 
 function LauncherButton() {
   return (
-    <button
-      class="launcher-btn"
-      onClicked={() => execAsync("wofi --show drun --allow-images")}
-    >
+    <button class="launcher-btn" onClicked={() => execAsync("wofi --show drun --allow-images")}>
       <label label="󱓞" />
     </button>
   )
