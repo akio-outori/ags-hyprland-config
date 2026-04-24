@@ -2,95 +2,188 @@ import app from "ags/gtk3/app"
 import { Astal, Gtk, Gdk } from "ags/gtk3"
 import { createPoll } from "ags/time"
 import { execAsync } from "ags/process"
+import { readFile, readFileAsync } from "ags/file"
 
-// Time and date
+// --- Poll safety wrapper ---------------------------------------------------
+// createPoll's subprocess form has no .catch() and no timeout: any hang or
+// non-zero exit leaves the widget silently frozen until AGS is restarted.
+// safePoll uses the functional overload and guarantees that a thrown / rejected
+// `fn` returns `prev` instead of killing the tick chain.
+function safePoll<T>(
+  init: T,
+  interval: number,
+  fn: (prev: T) => Promise<T>,
+) {
+  return createPoll(init, interval, async (prev: T) => {
+    try { return await fn(prev) } catch { return prev }
+  })
+}
+
+// Run a shell command with a hard timeout. `timeoutSec` must be < interval.
+async function execTimed(cmd: string, timeoutSec: number): Promise<string> {
+  return execAsync(["bash", "-c", `timeout ${timeoutSec} ${cmd}`])
+}
+
+// --- Sysfs discovery (once at startup; indices shift across boots) --------
+function findHwmonByName(name: string): string | null {
+  for (let i = 0; i < 32; i++) {
+    try {
+      const n = readFile(`/sys/class/hwmon/hwmon${i}/name`).trim()
+      if (n === name) return `/sys/class/hwmon/hwmon${i}`
+    } catch { /* missing index, continue */ }
+  }
+  return null
+}
+
+const AMDGPU_HWMON  = findHwmonByName("amdgpu")
+const K10TEMP_HWMON = findHwmonByName("k10temp")
+const DRM_DEVICE    = "/sys/class/drm/card1/device"
+
+// --- Time / date (trivial; date command rarely hangs) ---------------------
 const time = createPoll("--:--", 1000, "date '+%H:%M'")
 const date = createPoll("", 60000, "date '+%a %b %d'")
 
-// Hardware monitoring
-const gpuInfo = createPoll(
-  { temp: "0", wattage: "0", mem: "0/0" },
+// --- Hardware telemetry (sysfs; no subprocess) ----------------------------
+type HwInfo = {
+  cpuTemp: string
+  gpuTemp: string
+  gpuWatt: string
+  vramUsedMiB: string
+  vramTotalMiB: string
+}
+
+async function readHwInfo(prev: HwInfo): Promise<HwInfo> {
+  const results = await Promise.all([
+    K10TEMP_HWMON
+      ? readFileAsync(`${K10TEMP_HWMON}/temp1_input`).then(s => String(Math.round(parseInt(s) / 1000)))
+      : Promise.resolve(prev.cpuTemp),
+    AMDGPU_HWMON
+      ? readFileAsync(`${AMDGPU_HWMON}/temp1_input`).then(s => String(Math.round(parseInt(s) / 1000)))
+      : Promise.resolve(prev.gpuTemp),
+    AMDGPU_HWMON
+      ? readFileAsync(`${AMDGPU_HWMON}/power1_average`).then(s => String(Math.round(parseInt(s) / 1_000_000)))
+      : Promise.resolve(prev.gpuWatt),
+    readFileAsync(`${DRM_DEVICE}/mem_info_vram_used`).then(s => String(Math.round(parseInt(s) / 1024 / 1024))),
+    readFileAsync(`${DRM_DEVICE}/mem_info_vram_total`).then(s => String(Math.round(parseInt(s) / 1024 / 1024))),
+  ])
+  return {
+    cpuTemp: results[0], gpuTemp: results[1], gpuWatt: results[2],
+    vramUsedMiB: results[3], vramTotalMiB: results[4],
+  }
+}
+
+const hwInfo = safePoll<HwInfo>(
+  { cpuTemp: "0", gpuTemp: "0", gpuWatt: "0", vramUsedMiB: "0", vramTotalMiB: "0" },
   1000,
-  ["bash", "-c", `
-    nvidia-smi --query-gpu=temperature.gpu,power.draw,memory.used,memory.total --format=csv,noheader,nounits |
-    awk -F', ' '{printf "{\\"temp\\": \\"%s\\", \\"wattage\\": \\"%d\\", \\"mem\\": \\"%d/%d\\"}", $1, int($2), $3, $4}'
-  `],
-  (out) => {
-    try {
-      const parsed = JSON.parse(out)
-      return {
-        temp: parsed.temp || "0",
-        wattage: parsed.wattage || "0",
-        mem: parsed.mem || "0/0",
-      }
-    } catch {
-      return { temp: "0", wattage: "0", mem: "0/0" }
-    }
-  },
+  readHwInfo,
 )
 
-const ramInfo = createPoll(
+// --- RAM from /proc/meminfo ----------------------------------------------
+type RamInfo = { used: string; total: string; percent: string }
+
+const ramInfo = safePoll<RamInfo>(
   { used: "0", total: "0", percent: "0" },
   2000,
-  ["bash", "-c",
-    `free -m | awk '/^Mem:/ {used=$2-$7; total=$2; percent=int(used/total*100); print "{\\"used\\": \\"" used "\\", \\"total\\": \\"" total "\\", \\"percent\\": \\"" percent "\\"}"}'`,
-  ],
-  (out) => {
-    try { return JSON.parse(out) } catch { return { used: "0", total: "0", percent: "0" } }
+  async () => {
+    const txt = await readFileAsync("/proc/meminfo")
+    const kv: Record<string, number> = {}
+    for (const line of txt.split("\n")) {
+      const m = line.match(/^(\w+):\s+(\d+)/)
+      if (m) kv[m[1]] = parseInt(m[2])
+    }
+    // Match `free`: used = MemTotal - MemAvailable (values are kB; we want MiB)
+    const totalMiB = Math.round(kv.MemTotal / 1024)
+    const usedMiB  = Math.round((kv.MemTotal - kv.MemAvailable) / 1024)
+    const percent  = totalMiB > 0 ? Math.round((usedMiB / totalMiB) * 100) : 0
+    return { used: String(usedMiB), total: String(totalMiB), percent: String(percent) }
   },
 )
 
-const cpuTemp = createPoll(
-  { ccd1: "0", ccd2: "0" },
-  1000,
-  ["bash", "-c",
-    `sensors | grep 'Tccd' | awk '{gsub(/[°C+]/, "", $2); temps[NR]=int($2)} END {print "{\\"ccd1\\": \\"" temps[1] "\\", \\"ccd2\\": \\"" temps[2] "\\"}"}'`,
-  ],
-  (out) => {
-    try { return JSON.parse(out) } catch { return { ccd1: "0", ccd2: "0" } }
-  },
-)
+// --- CPU % from /proc/stat (delta vs previous read) ----------------------
+type CpuPrev = { total: number; idle: number }
+let cpuPrev: CpuPrev | null = null
 
-const cpuUsage = createPoll("0", 2000, ["bash", "-c",
-  "grep 'cpu ' /proc/stat | awk '{usage=int(100-($5/($2+$3+$4+$5+$6+$7+$8))*100)} END {print usage}'",
-])
+const cpuUsage = safePoll<string>("0", 2000, async () => {
+  const txt = await readFileAsync("/proc/stat")
+  const line = txt.split("\n")[0]                    // "cpu  user nice sys idle iowait irq softirq steal ..."
+  const f = line.trim().split(/\s+/).slice(1).map(Number)
+  const idle = f[3] + (f[4] || 0)                    // idle + iowait
+  const total = f.reduce((a, b) => a + b, 0)
+  if (!cpuPrev) { cpuPrev = { total, idle }; return "0" }
+  const dTotal = total - cpuPrev.total
+  const dIdle  = idle  - cpuPrev.idle
+  cpuPrev = { total, idle }
+  if (dTotal <= 0) return "0"
+  return String(Math.round(100 * (1 - dIdle / dTotal)))
+})
 
-const networkStats = createPoll(
+// --- Network rx/tx delta from /sys/class/net -----------------------------
+type NetInfo = { down: string; up: string }
+type NetPrev = { rx: number; tx: number; t: number }
+let netPrev: NetPrev | null = null
+
+function humanBytes(n: number): string {
+  if (n < 1024) return `${n} B`
+  const u = ["K", "M", "G", "T"]
+  let x = n / 1024, i = 0
+  while (x >= 1024 && i < u.length - 1) { x /= 1024; i++ }
+  return `${x.toFixed(x < 10 ? 1 : 0)} ${u[i]}iB`
+}
+
+async function sumIfaceBytes(stat: "rx_bytes" | "tx_bytes"): Promise<number> {
+  const ifs = await execAsync(["bash", "-c", "ls /sys/class/net/ | grep -E '^(e|w)'"])
+  let sum = 0
+  for (const ifn of ifs.trim().split("\n").filter(Boolean)) {
+    try {
+      const v = await readFileAsync(`/sys/class/net/${ifn}/statistics/${stat}`)
+      sum += parseInt(v)
+    } catch { /* interface gone, skip */ }
+  }
+  return sum
+}
+
+const networkStats = safePoll<NetInfo>(
   { down: "0 B", up: "0 B" },
   2000,
-  ["bash", "-c", `
-    rx1=$(cat /sys/class/net/[ew]*/statistics/rx_bytes 2>/dev/null | awk '{s+=$1} END {print s}')
-    tx1=$(cat /sys/class/net/[ew]*/statistics/tx_bytes 2>/dev/null | awk '{s+=$1} END {print s}')
-    sleep 1
-    rx2=$(cat /sys/class/net/[ew]*/statistics/rx_bytes 2>/dev/null | awk '{s+=$1} END {print s}')
-    tx2=$(cat /sys/class/net/[ew]*/statistics/tx_bytes 2>/dev/null | awk '{s+=$1} END {print s}')
-    rx=$((rx2 - rx1))
-    tx=$((tx2 - tx1))
-    echo "{ \\"down\\": \\"$(numfmt --to=iec-i --suffix=B $rx)\\", \\"up\\": \\"$(numfmt --to=iec-i --suffix=B $tx)\\" }"
-  `],
-  (out) => {
-    try { return JSON.parse(out) } catch { return { down: "0 B", up: "0 B" } }
+  async () => {
+    const [rx, tx] = await Promise.all([sumIfaceBytes("rx_bytes"), sumIfaceBytes("tx_bytes")])
+    const now = Date.now()
+    if (!netPrev) { netPrev = { rx, tx, t: now }; return { down: "0 B", up: "0 B" } }
+    const dt = Math.max(1, (now - netPrev.t) / 1000)
+    const dRx = Math.max(0, rx - netPrev.rx) / dt
+    const dTx = Math.max(0, tx - netPrev.tx) / dt
+    netPrev = { rx, tx, t: now }
+    return { down: `${humanBytes(Math.round(dRx))}/s`, up: `${humanBytes(Math.round(dTx))}/s` }
   },
 )
 
-const volume = createPoll(
-  { level: "0", muted: false as boolean },
+// --- Volume via pactl (no sysfs; subprocess with 1 s timeout) ------------
+type VolInfo = { level: string; muted: boolean }
+
+const volume = safePoll<VolInfo>(
+  { level: "0", muted: false },
   1000,
-  ["bash", "-c", `
-    vol=$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\\d+%' | head -1 | tr -d '%')
-    muted=$(pactl get-sink-mute @DEFAULT_SINK@ | grep -q "yes" && echo "true" || echo "false")
-    echo "{ \\"level\\": \\"$vol\\", \\"muted\\": $muted }"
-  `],
-  (out) => {
-    try { return JSON.parse(out) } catch { return { level: "0", muted: false } }
+  async () => {
+    const out = await execTimed(
+      `vol=$(pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\\d+%' | head -1 | tr -d '%'); ` +
+      `m=$(pactl get-sink-mute @DEFAULT_SINK@ | grep -q yes && echo true || echo false); ` +
+      `echo "{\\"level\\":\\"$vol\\",\\"muted\\":$m}"`,
+      1,
+    )
+    return JSON.parse(out)
   },
 )
 
-const updatesCount = createPoll("0", 300000, ["bash", "-c",
-  "checkupdates 2>/dev/null | wc -l || paru -Qu 2>/dev/null | wc -l || echo 0",
-])
+// --- Pacman updates (checkupdates locks DB; 30 s timeout) ----------------
+const updatesCount = safePoll<string>(
+  "0",
+  300_000,
+  async () => {
+    const out = await execTimed("checkupdates 2>/dev/null | wc -l", 30)
+    return out.trim() || "0"
+  },
+)
 
-// Widget Components
 function HardwareMonitor() {
   return (
     <box class="hardware-monitor">
@@ -100,14 +193,17 @@ function HardwareMonitor() {
       >
         <box>
           <label label={cpuUsage.as((v) => `󰍛 CPU ${v}% `)} />
-          <label label={cpuTemp.as((v) => `${v.ccd1}°/${v.ccd2}°C`)} />
+          <label label={hwInfo.as((v) => `${v.cpuTemp}°C`)} />
         </box>
       </button>
       <button
         class="hw-widget gpu-widget"
-        onClicked={() => execAsync("nvidia-settings")}
+        onClicked={() => execAsync("amdgpu_top --gui")}
       >
-        <label label={gpuInfo.as((v) => `󰢮 GPU ${v.wattage}W ${v.temp}°C`)} />
+        <label label={hwInfo.as((v) => {
+          const usedGiB = (parseInt(v.vramUsedMiB) / 1024).toFixed(1)
+          return `󰢮 GPU ${v.gpuWatt}W ${v.gpuTemp}°C ${usedGiB}G`
+        })} />
       </button>
       <button
         class="hw-widget ram-widget"
@@ -132,10 +228,7 @@ function NetworkMonitor() {
 
 function VolumeControl() {
   return (
-    <button
-      class="volume-control"
-      onClicked={() => execAsync("pavucontrol")}
-    >
+    <button class="volume-control" onClicked={() => execAsync("pavucontrol")}>
       <label label={volume.as((v) => {
         const lvl = parseInt(v.level)
         const icon = v.muted ? "󰖁" : lvl > 50 ? "󰕾" : lvl > 0 ? "󰖀" : "󰕿"
@@ -148,10 +241,7 @@ function VolumeControl() {
 function Clock() {
   return (
     <box class="clock-widget">
-      <button
-        class="time-display"
-        onClicked={() => execAsync("gnome-calendar")}
-      >
+      <button class="time-display" onClicked={() => execAsync("gnome-calendar")}>
         <label label={time.as((t) => `${t} ${date.get()}`)} />
       </button>
     </box>
@@ -171,10 +261,7 @@ function UpdateNotifier() {
 
 function PowerMenu() {
   return (
-    <button
-      class="power-menu"
-      onClicked={() => execAsync("wlogout --protocol layer-shell")}
-    >
+    <button class="power-menu" onClicked={() => execAsync("wlogout --protocol layer-shell")}>
       <label label="󰐥" />
     </button>
   )
@@ -182,10 +269,7 @@ function PowerMenu() {
 
 function LauncherButton() {
   return (
-    <button
-      class="launcher-btn"
-      onClicked={() => execAsync("wofi --show drun --allow-images")}
-    >
+    <button class="launcher-btn" onClicked={() => execAsync("wofi --show drun --allow-images")}>
       <label label="󱓞" />
     </button>
   )
